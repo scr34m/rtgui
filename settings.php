@@ -20,7 +20,7 @@ session_start();
 $execstart=$start=microtime(true);
 include "functions.php";
 include "config.php";
-import_request_variables("gp","r_");
+extract($_REQUEST, EXTR_PREFIX_ALL|EXTR_REFS, 'r');
 
 if (!isset($_SESSION['refresh'])) $_SESSION['refresh']=$defaultrefresh;
 if (isset($r_setrefresh)) $_SESSION['refresh']=$r_setrefresh;

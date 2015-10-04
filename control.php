@@ -18,7 +18,8 @@
 
 include "functions.php";
 include "config.php";
-import_request_variables("gp","r_");
+extract($_REQUEST, EXTR_PREFIX_ALL|EXTR_REFS, 'r');
+extract($_FILES, EXTR_PREFIX_ALL|EXTR_REFS, 'r');
 
 // Bulk stop/start/delete torrents...
 if (isset($r_bulkaction) && is_array($r_select)) {

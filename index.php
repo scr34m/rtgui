@@ -20,7 +20,7 @@ $execstart=$start=microtime(true);
 session_start();
 include "config.php";
 include "functions.php";
-import_request_variables("gp","r_");
+extract($_REQUEST, EXTR_PREFIX_ALL|EXTR_REFS, 'r');
 
 // Try using alternative XMLRPC library from http://sourceforge.net/projects/phpxmlrpc/  (see http://code.google.com/p/rtgui/issues/detail?id=19)
 if(!function_exists('xml_parser_create')) {
