@@ -96,16 +96,33 @@ if (isset($downloaddir)) {
    echo "</div>\n";
 }
 
+// Get the list of torrents downloading
+$data=get_full_list($_SESSION['view']);
+
+$trackers = array ();
+foreach($data as $item) {
+    $key = tracker_url($item['hash']);
+    if ( !isset($trackers[$key]) ) {
+        $trackers[$key] = array ('up_rate' => 0, 'down_rate' => 0, 'ratio' => 0, 'count' => 0);
+    }
+
+    $trackers[$key]['up_rate'] += $item['up_rate'];
+    $trackers[$key]['down_rate'] += $item['down_rate'];
+    $trackers[$key]['ratio'] += $item['ratio'];
+    $trackers[$key]['count']++;
+}
 
 // Tracker filter
 echo "<form method='post'>\n";
 if ($_SESSION['tracker_filter']=="") {
-   echo "<p>Group filter:";
-   echo "<select name='settrackerfilter'>";
-   foreach ($tracker_hilite as $num=>$tracker) {
-      echo "<option value='_group_".$num."'>".$tracker[1].(isset($tracker[2]) ? "..." : "")."</option>";
+   if (is_array($tracker_hilite) && sizeof($tracker_hilite) > 0) {
+      echo "<p>Group filter:";
+      echo "<select name='settrackerfilter'>";
+      foreach ($tracker_hilite as $num=>$tracker) {
+         echo "<option value='_group_".$num."'>".$tracker[1].(isset($tracker[2]) ? "..." : "")."</option>";
+      }
+      echo "</select><input type='submit' value='Go'></p>\n";
    }
-   echo "</select><input type='submit' value='Go'></p>\n";
 } else {
    echo "<p>Showing ".($_SESSION['filter_invert']==0 ? "ONLY" : "all EXCEPT")." <b>";
    if (substr($_SESSION['tracker_filter'],0,7)=="_group_") {
@@ -128,13 +145,24 @@ echo "File: <input name='uploadtorrent' type='file' size=25 /> <input type='subm
 echo "</form>\n";
 echo "</div>\n";  // end of divadd div
 
+echo '<p>';
+$c = count($trackers) - 1;
+$i = 0;
+foreach ( $trackers as $tracker => $info ) {
+    $down_rate = format_bytes($info['down_rate']);
+    $up_rate = format_bytes($info['up_rate']);
+    echo '<a href="?settrackerfilter='.$tracker.'">'.$tracker.'</a> ('.$info['count'].')';
+    if ( $down_rate ) echo ' <span class="inline download">'.$down_rate.'</span>';
+    if ( $up_rate ) echo ' <span class="inline upload">'.$up_rate.'</span>';
+    if ( $i != $c ) echo ', ';
+    $i++;
+}
+echo '</p>';
+
 echo "</div>\n";  // end of boxright div
 
 echo "</div>\n";  // end of header div
 // Title Block End
-
-// Get the list of torrents downloading
-$data=get_full_list($_SESSION['view']);
 
 // Get tracker URL for each torrent - this does an RPC query for every torrent - might be heavy on server so you might want to disable in config.php
 if ($displaytrackerurl==TRUE && is_array($data)) {
