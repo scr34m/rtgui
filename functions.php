@@ -23,16 +23,62 @@ if(!function_exists('xml_parser_create')) {
   include("xmlrpc_extension_api.inc");
 }
 
-function do_xmlrpc($request) {
-   global $rpc_connect;
-   $context = stream_context_create(array('http' => array('method' => "POST",'header' =>"Content-Type: text/xml",'content' => $request)));
-   if ($file = @file_get_contents($rpc_connect, false, $context)) {
-      $file=str_replace("i8","double",$file);
-      $file = utf8_encode($file); 
-      return xmlrpc_decode($file);
-   } else {
-      die ("<h1>Cannot connect to rtorrent :(</h1>");
-   }
+function do_xmlrpc_http($request, $rpc_connect)
+{
+    $context = stream_context_create(array('http' => array('method' => "POST",'header' =>"Content-Type: text/xml",'content' => $request)));
+    if ($file = @file_get_contents($rpc_connect, false, $context)) {
+        return $file;
+    }
+    return false;
+}
+
+function do_xmlrpc_scgi($request, $host, $port)
+{
+    $len = strlen($request);
+    $payload = ':CONTENT_LENGTH'."\0".$len."\0";
+    $payload .= 'SCGI'."\0".'1'."\0";
+    $payload .= ',';
+    $payload_len = strlen($payload) - 2; // :,
+    $payload = $payload_len . $payload . $request;
+
+    $response = '';
+    $header = false;
+    $fp = fsockopen($host, $port, $errno, $errstr, 6);
+    if (!$fp) return false;
+    fwrite($fp, $payload);
+    while (!feof($fp)) {
+        $s = fgets($fp, 1024);
+        if ( $s == "\r\n" ) {
+            $header = true;
+            continue;
+        }
+        if ( $header === true ) $response .= $s;
+    }
+    fclose($fp);
+
+    return $response;
+}
+
+function do_xmlrpc($request)
+{
+    global $rpc_connect;
+
+    $data = false;
+    $p = parse_url($rpc_connect);
+    switch ( $p['scheme'] == 'scgi' ) {
+        case 'scgi':
+            $data = do_xmlrpc_scgi($request, $p['host'], $p['port']);
+            break;
+        case 'http':
+            $data = do_xmlrpc_http($request, $rpc_connect);
+            break;
+    }
+
+    if ( $data !== false ) {
+        $data = str_replace('i8', 'double', $data);
+        return xmlrpc_decode(utf8_encode($data));
+    }
+    die ("<h1>Cannot connect to rtorrent :(</h1>");
 }
 
 // Get full list - retrieve full list of torrents 
