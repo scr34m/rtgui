@@ -364,3 +364,6 @@ div.controlcontainer {
    margin: 0px 0px 0px 0px;
    padding: 0px 0px 0px 0px;
 }
+
+.ratio-green { color: #00aa00; }
+.ratio-red { color: #cc0000; }

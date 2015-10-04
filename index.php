@@ -300,7 +300,12 @@ foreach($data AS $item) {
       echo "<div class='datacol download' style='width:89px;' id='t".$item['hash']."down_rate'>".format_bytes($item['down_rate'])."</div>\n";
       echo "<div class='datacol upload' style='width:89px;' id='t".$item['hash']."up_rate'>".format_bytes($item['up_rate'])."</div>\n";
       echo "<div class='datacol' style='width:89px;' id='t".$item['hash']."up_total'>".format_bytes($item['up_total'])."</div>\n";
-      echo "<div class='datacol' style='width:70px;' id='t".$item['hash']."ratio'>".@round(($item['ratio']/1000),2)."</div>\n";
+
+      $ratio = @round(($item['ratio']/1000),2);
+      if ( $ratio > 1 ) $ratio = '<span class="ratio-green">'.$ratio.'</span>';
+      if ( $ratio < 1 ) $ratio = '<span class="ratio-red">'.$ratio.'</span>';
+
+      echo "<div class='datacol' style='width:70px;' id='t".$item['hash']."ratio'>".$ratio."</div>\n";
       echo "<div class='datacol' style='width:105px;' id='t".$item['hash']."peers'>".$item['peers_connected']."/".$item['peers_not_connected']." (".$item['peers_complete'].")"."</div>\n";
       echo "<div class='datacollast' style='width:70px;' id='t".$item['hash']."priority_str'>".$item['priority_str']."</div>\n";
       echo "<div class=spacer> </div>\n";
