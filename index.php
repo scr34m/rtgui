@@ -86,6 +86,7 @@ echo "<div id='boxright'>\n";
 echo "<p>\n";
 echo "Down: <span class='inline download' id='glob_down_rate'>".(format_bytes($rates[0]['ratedown'])=="" ? "0 KB" : format_bytes($rates[0]['ratedown']))."/sec</span> ".($globalstats['download_cap']!=0 ? "<span class='smalltext'>[".format_bytes($globalstats['download_cap'])."]</span>" : "")."&nbsp;&nbsp;&nbsp;\n";
 echo "Up: <span class='inline upload' id='glob_up_rate'>".(format_bytes($rates[0]['rateup'])=="" ? "0 KB" : format_bytes($rates[0]['rateup']))."/sec</span> ".($globalstats['upload_cap']!=0 ? "<span class='smalltext'>[".format_bytes($globalstats['upload_cap'])."]</span>" : "")."\n";
+echo "- <a class='submodal-600-520' href='settings.php'>Settings</a>\n";
 echo "</p>\n";
 
 if (isset($downloaddir)) {
@@ -134,13 +135,10 @@ if ($_SESSION['tracker_filter']=="") {
 }
 echo "</form>\n";
 
-// Settings/Add Torrent etc...
-echo "<p><a class='submodal-600-520' href='settings.php'>Settings</a> | <a href=\"javascript:toggleLayer('divadd');\">Add Torrent</a></p>\n";
-
 // Hidden Add Torrent form...
-echo "<div id='divadd' class='togglevis' style='width:350px;float:right;' align='right'>";
+echo "<div id='divadd' class='togglevis' style='display: block; width:350px;float:right;' align='right'>";
 echo "<form method='post' action='control.php' enctype='multipart/form-data'>\n";
-echo "URL: <input type=text name='addurl' size=38 maxlength=500 /> <input type='submit' value='Go' /><br/>\n";
+// echo "URL: <input type=text name='addurl' size=38 maxlength=500 /> <input type='submit' value='Go' /><br/>\n";
 echo "File: <input name='uploadtorrent' type='file' size=25 /> <input type='submit' value='Go' />\n";
 echo "</form>\n";
 echo "</div>\n";  // end of divadd div
