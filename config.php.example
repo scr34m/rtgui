@@ -48,6 +48,9 @@ $load_start=FALSE;
 // Enable debug tabs
 $debugtab=FALSE;
 
+// HTTP download links tab in torrent view
+$httpdltab=FALSE;
+
 // Tracker colour hilighting...
 // Format is array(hexcolour, URL, URL, ...) The URL is a string to match identifiy tracker URL
 // Add as many arrays as needed.

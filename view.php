@@ -22,7 +22,7 @@ include "config.php";
 extract($_REQUEST, EXTR_PREFIX_ALL|EXTR_REFS, 'r');
 
 if (!isset($r_select)) {
-   $r_select="files";
+   $r_select=$httpdltab?"httpdl":"files";
 }
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -64,6 +64,9 @@ echo "<p>&nbsp;</p>";
 // Select view...
 echo "<div id='navcontainer'  style='width:552px'>\n";
 echo "<ul id='navlist'>\n";
+if ($httpdltab) {
+    echo "<li><a ".($r_select=="httpdl" ? "id='current'" : "")." href='?select=httpdl&amp;hash=$r_hash'>HTTP Download</a></li>\n";
+}
 echo "<li><a ".($r_select=="files" ? "id='current'" : "")." href='?select=files&amp;hash=$r_hash'>Files</a></li>\n";
 echo "<li><a ".($r_select=="tracker" ? "id='current'" : "")." href='?select=tracker&amp;hash=$r_hash'>Tracker</a></li>\n";
 echo "<li><a ".($r_select=="peers" ? "id='current'" : "")." href='?select=peers&amp;hash=$r_hash'>Peers</a></li>\n";
@@ -74,6 +77,20 @@ if ($debugtab) {
 }
 echo "</ul>\n";
 echo "</div>\n";
+
+// Display direct download links
+if ($r_select=="httpdl") {
+    $data=get_file_list($r_hash);
+    echo "<div class='container' style='width:550px'>\n";
+    echo "<div class='row1'>\n";
+    foreach($data AS $item) {
+        $path = mb_wordwrap($item['get_path'], 90, "<br/>\n", true);
+        $protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' || $_SERVER['SERVER_PORT'] == 443) ? "https://" : "http://";
+        echo $protocol . $_SERVER['HTTP_HOST'] . dirname($_SERVER['SCRIPT_NAME']) . '/files/' . $path . '<br />';
+    }
+    echo "</div>\n";  // end of $thisrow div
+    echo "</div>\n";  // end container div
+}
 
 // Display file info...
 if ($r_select=="files") {
