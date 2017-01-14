@@ -36,7 +36,7 @@ $defaultrefresh=5000;
 // If it's disabled, it only requires one RPC call to list all the torrents.
 $displaytrackerurl=TRUE;
 
-// URL to your rtGui installation (used in RSS feed).  Include trailing slash.
+// URL to your rtGui installation (used in RSS feed, HTTP DL tab).  Include trailing slash.
 $rtguiurl="http://192.168.0.1/rtgui/";
 
 // Speeds for the download cap settings dialog.

@@ -85,8 +85,7 @@ if ($r_select=="httpdl") {
     echo "<div class='row1'>\n";
     foreach($data AS $item) {
         $path = mb_wordwrap($item['get_path'], 90, "<br/>\n", true);
-        $protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' || $_SERVER['SERVER_PORT'] == 443) ? "https://" : "http://";
-        echo $protocol . $_SERVER['HTTP_HOST'] . dirname($_SERVER['SCRIPT_NAME']) . '/files/' . $path . '<br />';
+        echo $rtguiurl . 'files/' . $path . '<br />';
     }
     echo "</div>\n";  // end of $thisrow div
     echo "</div>\n";  // end container div
