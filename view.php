@@ -84,7 +84,7 @@ if ($r_select=="httpdl") {
     echo "<div class='container' style='width:550px'>\n";
     echo "<div class='row1'>\n";
     foreach($data AS $item) {
-        $path = mb_wordwrap($item['get_path'], 90, "<br/>\n", true);
+        $path = substr($item['get_frozen_path'], strlen($downloaddir));
         echo $rtguiurl . 'files/' . $path . '<br />';
     }
     echo "</div>\n";  // end of $thisrow div
